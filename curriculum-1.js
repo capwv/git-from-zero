@@ -292,7 +292,7 @@ index a2f0f8b..c3d4e5f 100644
     { type: 'note', text: 'حركة احترافية: git log --oneline --graph بيرسم التاريخ كشجرة. هتقدرها جداً لما نوصل للـ branches والـ merges في الدروس الجاية.' }
   ],
   quiz: [
-    { q: 'عايز تشوف آخر 5 commits بشكل مختصر. الأمر الأنسب؟', options: [
+    { q: 'عايز تشوف تاريخ الـ commits كل واحدة في سطر مختصر. الأمر الأنسب؟', options: [
       { text: 'git log --oneline', mono: true },
       { text: 'git show', mono: true },
       { text: 'git status', mono: true }
