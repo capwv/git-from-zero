@@ -606,7 +606,26 @@ $ git push
     ] },
     { type: 'note', text: 'نشرت أول موقع؟ مبروك، دي نفس خطوات نشر كل أكاديميات المنصة دي. شارك اللينك، وابدأ فكر: إيه اللي ممكن تبنيه كمشروع تاني؟' }
   ],
-  quiz: [],
+  quiz: [
+    { q: 'إيه الأمر اللي بيربط الفولدر المحلي بالـ repo الفاضية اللي عملتها على GitHub؟', options: [
+      { text: 'git remote add origin https://github.com/USERNAME/my-first-site.git' },
+      { text: 'git init https://github.com/USERNAME/my-first-site.git' },
+      { text: 'git clone origin main' },
+      { text: 'git pages enable origin' }
+    ], answer: 0, explain: 'git remote add origin بيسجل عنوان الـ repo البعيدة باسم origin، وبعدها git push -u origin main بيرفع الكود عليها.' },
+    { q: 'في GitHub Pages، إعدادات النشر الصح لموقع بسيط هي:', options: [
+      { text: 'Settings ثم Pages، المصدر Deploy from a branch، البرانش main والفولدر / (root)' },
+      { text: 'Settings ثم Security، وتفعيل Pages من هناك' },
+      { text: 'تعمل branch اسمها pages وتمسح main' },
+      { text: 'مفيش حاجة تتفعل، أي repo بتبقى موقع لوحدها' }
+    ], answer: 0, explain: 'من Settings ثم Pages بتختار Deploy from a branch، وبعدين main و / (root) وتدوس Save، وبعد دقيقة أو اتنين الرابط بيشتغل.' },
+    { q: 'بعد ما الموقع اتنشر، عدلت الصفحة وعملت commit. إيه اللي لازم تعمله عشان التعديل يظهر على الرابط المنشور؟', options: [
+      { text: 'تمسح الـ repo وتنشرها من جديد' },
+      { text: 'git push، والموقع بيتحدث لوحده بعد حوالي دقيقة' },
+      { text: 'تضغط Save في Settings ثم Pages كل مرة' },
+      { text: 'تعمل git clone تاني' }
+    ], answer: 1, explain: 'كل push جديد على main بيحدث الموقع تلقائيا خلال دقيقة تقريبا، من غير أي خطوة تانية.' }
+  ],
   exercises: [
     { task: 'نفذ المشروع الختامي كله من الأول للآخر: صفحة HTML ← repo ← push ← تفعيل Pages ← فتح الرابط المنشور', code: `# المسار الكامل بالترتيب:
 git init
