@@ -188,7 +188,7 @@ Fast-forward
       'docs/... لتوثيق: docs/setup-guide'
     ] },
     { type: 'p', text: 'الاسم الوصفي بيخلي `git branch` أشبه بقائمة مهام. وربط الـ branch بالـ issue (بكتابة رقمها في الرسايل أو الـ PR) بيخلي كل commit مفهوم السياق.' },
-    { type: 'note', text: 'الأكاديميات الأربعة زمايلنا (SQL و Python و Excel و Power BI) كلها repos على GitHub بنفس الحساب، وأي تحسين فيها بيعدي بنفس الدورة دي. شوف github.com/capwv لو عايز أمثلة حية.' }
+    { type: 'note', text: 'أكاديميات المنصة زمايلنا (SQL و Python و Excel و Power BI وباقي الأكاديميات) كلها repos على GitHub بنفس الحساب، وأي تحسين فيها بيعدي بنفس الدورة دي. شوف github.com/capwv لو عايز أمثلة حية.' }
   ],
   quiz: [
     { q: 'إيه القاعدة الجوهرية في GitHub Flow؟', options: [
