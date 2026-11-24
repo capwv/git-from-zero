@@ -153,7 +153,7 @@ var MISSIONS = [
     } },
   { id: 'conflict', title: 'حل conflict من غير زعر',
     desc: 'جهزنا لك سيناريو: انت وزميلك عدلتوا نفس السطر. اعمل git merge hotfix، افتح الملف المتعارض، اختار المحتوى الصح (echo "الحل" > الملف)، بعدين add و commit.',
-    hint: 'git merge hotfix ← cat plan.txt ← echo "الحل النهائي" > plan.txt ← git add plan.txt ← git commit -m "resolve conflict"',
+    hint: 'git merge hotfix ← cat README.md ← echo "الحل النهائي" > README.md ← git add README.md ← git commit -m "resolve conflict"',
     setup: function (s, run) {
       if (!s.branches.main) return;
       var f = Object.keys(C.treeAt(s, s.branches.main))[0] || 'README.md';
@@ -193,7 +193,7 @@ var MISSIONS = [
     } },
   { id: 'undo', title: 'التراجع عن الغلط',
     desc: 'بيلعب في ملفاتك غلطة متخزنة في الـ staging وتعديل تاني غلط في مجلد الشغل. فضّي الـ staging بـ git restore --staged وارجع الملف بـ git restore.',
-    hint: 'git restore --staged plan.txt ← git restore plan.txt (و git status يتأكد)',
+    hint: 'git restore --staged README.md ← git restore README.md (و git status يتأكد)',
     setup: function (s, run) {
       var f = Object.keys(s.files)[0] || 'README.md';
       s._undoFile = f;
