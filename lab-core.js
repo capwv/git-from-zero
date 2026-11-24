@@ -190,7 +190,7 @@ function treeAt(s, id) {
 }
 function makeCommit(s, msg, tree, parents) {
   var id = fnv(msg + JSON.stringify(tree) + parents.join(',') + ':' + (s.seq++));
-  var c = { id: id, msg: msg, tree: clone(tree), parents: parents.slice(), time: s.seq };
+  var c = { id: id, msg: msg, tree: clone(tree), parents: parents.slice(), time: Date.now() };
   s.commits.push(c);
   return c;
 }
@@ -472,11 +472,79 @@ H.commit = function (s, args) {
   return out;
 };
 
+
+function graphLog(s, oneline, all) {
+  var tips = [];
+  var h = C.headId(s);
+  if (h) tips.push(h);
+  if (all) {
+    Object.keys(s.branches).forEach(function (b) { tips.push(s.branches[b]); });
+    Object.keys(s.remoteBranches).forEach(function (b) { tips.push(s.remoteBranches[b]); });
+  }
+  var seen = {}, list = [];
+  tips.forEach(function (t) {
+    var st = [t];
+    while (st.length) {
+      var id = st.pop();
+      if (!id || seen[id]) continue;
+      seen[id] = 1;
+      var c = C.commitById(s, id);
+      if (!c) continue;
+      list.push(c);
+      c.parents.forEach(function (p) { st.push(p); });
+    }
+  });
+  list.sort(function (a, b) { return s.commits.indexOf(b) - s.commits.indexOf(a); });
+  function refsLabel(id) {
+    var refs = [];
+    if (id === h) refs.push('HEAD' + (s.HEAD.branch ? ' -> ' + s.HEAD.branch : ''));
+    Object.keys(s.branches).forEach(function (b) { if (s.branches[b] === id && !(id === h && b === s.HEAD.branch)) refs.push(b); });
+    Object.keys(s.remoteBranches).forEach(function (b) { if (s.remoteBranches[b] === id) refs.push(b); });
+    return refs.length ? ' (' + refs.join(', ') + ')' : '';
+  }
+  var lanes = [], out = [];
+  function laneStr(symIdx, sym) {
+    var parts = [];
+    for (var i = 0; i < lanes.length; i++) parts.push(i === symIdx ? sym : '|');
+    return parts.join(' ');
+  }
+  list.forEach(function (c) {
+    var idx = lanes.indexOf(c.id);
+    if (idx === -1) { lanes.push(c.id); idx = lanes.length - 1; }
+    out.push({ text: laneStr(idx, '*') + ' ' + (oneline ? short(c.id) + refsLabel(c.id) + ' ' + c.msg : 'commit ' + fullId(s, c.id) + refsLabel(c.id)), cls: 't-id' });
+    var added = 0, i, parts;
+    if (!c.parents.length) { lanes.splice(idx, 1); }
+    else {
+      lanes[idx] = c.parents[0];
+      for (var k = 1; k < c.parents.length; k++) {
+        if (lanes.indexOf(c.parents[k]) === -1) { lanes.splice(idx + 1 + added, 0, c.parents[k]); added++; }
+      }
+    }
+    if (added) {
+      parts = [];
+      for (i = 0; i < lanes.length; i++) parts.push(i > idx && i <= idx + added ? '\\' : '|');
+      out.push(L(parts.slice(0, idx + 1 + added).join('')));
+    }
+    var dup = -1;
+    for (i = 0; i < lanes.length; i++) { if (lanes.indexOf(lanes[i]) !== i) { dup = i; break; } }
+    while (dup !== -1) {
+      parts = [];
+      for (i = 0; i <= dup; i++) parts.push(i < dup ? '|' : '/');
+      out.push(L(parts.join('')));
+      lanes.splice(dup, 1);
+      dup = -1;
+      for (i = 0; i < lanes.length; i++) { if (lanes.indexOf(lanes[i]) !== i) { dup = i; break; } }
+    }
+  });
+  return out;
+}
+
 H.log = function (s, args) {
   var r = requireRepo(s); if (r) return r;
   var h = C.headId(s);
   if (!h) return [err("fatal: your current branch '" + (s.HEAD.branch || 'main') + "' does not have any commits yet")];
   var oneline = args.indexOf('--oneline') !== -1;
+  if (args.indexOf('--graph') !== -1) return graphLog(s, oneline, args.indexOf('--all') !== -1);
   var out = [], id = h, guard = 0;
   while (id && guard++ < 50) {
     var c = C.commitById(s, id);
@@ -581,8 +649,9 @@ H.branch = function (s, args) {
       return [err("error: the branch '" + name + "' is not fully merged"),
         dim("hint: لو متأكد إنك عايز تمسحه: git branch -D " + name)];
     }
+    var wasId = s.branches[name];
     delete s.branches[name];
-    return [L('Deleted branch ' + name + '.', 't-ok')];
+    return [L('Deleted branch ' + name + ' (was ' + short(wasId) + ').', 't-ok')];
   }
   if (!names.length) {
     var out = [];
@@ -595,7 +664,7 @@ H.branch = function (s, args) {
   var nn = names[0];
   if (s.branches[nn]) return [err("fatal: a branch named '" + nn + "' already exists")];
   var h = C.headId(s);
-  if (!h) return [err('fatal: not a valid object name: \'' + (s.HEAD.branch || 'main') + '\' — اعمل أول commit الأول')];
+  if (!h) return [err('fatal: not a valid object name: \'' + (s.HEAD.branch || 'main') + '\' — اعمل أول commit')];
   s.branches[nn] = h;
   return [];
 };
@@ -611,6 +680,16 @@ function doSwitch(s, name, create) {
   }
   if (!s.branches[name]) return [err("error: pathspec '" + name + "' did not match any file(s) known to git")];
   if (s.HEAD.branch === name) return [L("Already on '" + name + "'")];
+  if (s.merging) return [err('error: لازم تخلص الـ merge الحالي الأول (git commit أو git merge --abort)')];
+  var curTree = headTree(s);
+  var newTree = C.treeAt(s, s.branches[name]);
+  var carry = {};
+  Object.keys(s.files).forEach(function (f) {
+    if (curTree[f] === undefined && newTree[f] === undefined) carry[f] = s.files[f];
+  });
+  s.files = C.clone(newTree);
+  Object.keys(carry).forEach(function (f) { s.files[f] = carry[f]; });
+  s.index = {};
   s.HEAD = { branch: name };
   return [L("Switched to branch '" + name + "'", 't-ok')];
 }
@@ -648,7 +727,7 @@ function mergeInto(s, otherId, label, otherName) {
   var h = C.headId(s);
   var out = [];
   if (s.merging) return [err('fatal: You have not concluded your merge (MERGE_HEAD exists).'),
-    dim('hint: خلص الـ merge الحالي (commit) أو اcancelها بـ git merge --abort')];
+    dim('hint: خلص الـ merge الحالي (commit) أو كانسلها بـ git merge --abort')];
   if (h === otherId || C.isAncestor(s, otherId, h)) return [L('Already up to date.')];
   if (!h || C.isAncestor(s, h, otherId)) {
     /* fast-forward */
