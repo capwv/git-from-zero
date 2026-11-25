@@ -34,19 +34,19 @@ Receiving objects: 100% (7/7), done.` },
   ],
   quiz: [
     { q: 'الـ remote اللي اسمه origin هو إيه؟', options: [
-      { text: 'اسم جهازك' },
+      { text: 'اسم جهازك على الشبكة اللي Git بيستخدمه عشان يعرف نفسه' },
       { text: 'العنوان الافتراضي للنسخة المستضافة من الـ repo (غالباً على GitHub)' },
-      { text: 'أول commit في المشروع' }
+      { text: 'أول commit اتعمل في المشروع ومنه بتتفرع كل الـ branches' }
     ], answer: 1, explain: 'origin هو الاسم التقليدي لأول remote بيتربط بالـ repo. تقدر تشوفه بـ git remote -v.' },
     { q: 'git remote add origin <url> بتعمل إيه؟', options: [
-      { text: 'بترفع ملفاتك على GitHub فوراً' },
+      { text: 'بترفع ملفاتك على GitHub فوراً وتبعتها كلها للـ remote الجديد' },
       { text: 'بتسجل عنوان الـ remote عند Git من غير ما ترفع أي حاجة' },
-      { text: 'بتنزل المشروع من GitHub' }
+      { text: 'بتنزل المشروع من GitHub على جهازك وتعمل منه نسخة محلية جديدة' }
     ], answer: 1, explain: 'الأمر بيسجل العنوان بس. الرفع بيتم بـ git push، والتنزيل بـ git clone أو git pull.' },
     { q: 'git clone بتعمل إيه بالظبط؟', options: [
-      { text: 'بتنزل آخر نسخة من الملفات بس من غير تاريخ' },
+      { text: 'بتنزل آخر نسخة من الملفات بس من غير تاريخ الـ commits والـ branches' },
       { text: 'بتنزل الـ repo كاملة بتاريخها وتنشئ فولدر وتربط الـ remote تلقائياً' },
-      { text: 'بتعمل نسخة احتياطية على GitHub' }
+      { text: 'بتعمل نسخة احتياطية من مشروعك على GitHub وتربطها بحسابك تلقائياً' }
     ], answer: 1, explain: 'clone بتنزل كل حاجة: الملفات والتاريخ والـ branches، وتجهز origin لوحده. بعدها تقدر تعمل log و push و pull عادي.' }
   ],
   exercises: [
@@ -112,9 +112,9 @@ hint: by merging (e.g., 'git pull ...') before pushing again.` },
   ],
   quiz: [
     { q: 'git push -u origin main حرف الـ u بيعمل إيه؟', options: [
-      { text: 'بيرفع الملفات بسرعة أكبر' },
+      { text: 'بيرفع الملفات بسرعة أكبر عن طريق ضغطها قبل الإرسال لـ GitHub' },
       { text: 'بيخلي main المحلي يتبع origin/main، فالأوامر الجاية تعرف طريقها من غير تفاصيل' },
-      { text: 'بيخلي الـ push مشفر' }
+      { text: 'بيخلي الـ push مشفر بالكامل فمحدش يقدر يشوف الملفات في الطريق' }
     ], answer: 1, explain: 'الـ upstream بيحفظ العلاقة بين البرانش المحلي ونسخته على الـ remote. بعدها git push و git pull لوحدهم كفاية.' },
     { q: 'git pull بتساوي إيه تحت الغطا؟', options: [
       { text: 'git fetch وبعدين git merge' },
@@ -122,8 +122,8 @@ hint: by merging (e.g., 'git pull ...') before pushing again.` },
       { text: 'git push بالعكس' }
     ], answer: 0, explain: 'pull = fetch (جيب الجديد) + merge (ادمجه في برانشك). عشان كده ممكن تظهر merge conflicts أثناء pull، وحلها نفس حل merge العادي.' },
     { q: 'push اترفضت برسالة non-fast-forward. إيه التصرف الصح؟', options: [
-      { text: 'git push --force فوراً' },
-      { text: 'امسح الـ repo وابدأ من الأول' },
+      { text: 'git push --force فوراً عشان تكتب فوق شغل الباقي وتخلص الرفض' },
+      { text: 'امسح الـ repo المحلية وابدأ من الأول بنسخة جديدة من GitHub' },
       { text: 'git pull عشان تدمج الشغل الجديد، حل أي conflicts، وبعدين push تاني' }
     ], answer: 2, explain: 'الـ remote فيها شغل انت مش واخده. pull بيدمجه، وبعدها push بتعدي. force بتمسح شغل زمايلك.' }
   ],
@@ -192,14 +192,14 @@ Fast-forward
   ],
   quiz: [
     { q: 'إيه القاعدة الجوهرية في GitHub Flow؟', options: [
-      { text: 'كل حاجة على main على طول عشان السرعة' },
+      { text: 'كل حاجة تتعمل على main على طول عشان السرعة ومحدش ينتظر مراجعة' },
       { text: 'محدش بيعمل commit على main مباشرة: كل تغيير بيعدي على branch و Pull Request' },
-      { text: 'branch واحد بس لكل المشروع' }
+      { text: 'branch واحد بس لكل المشروع، ولو عايز تجرب حاجة تعمل نسخة من الفولدر' }
     ], answer: 1, explain: 'الدورة: branch ← commits ← PR ← merge. كده main دايماً شغالة وكل تغيير متسجل ومراجع.' },
     { q: 'الـ issue على GitHub هي إيه؟', options: [
-      { text: 'رسالة خطأ في الكود' },
+      { text: 'رسالة خطأ بتظهر في الكود لما بيحصل crash وبتتسجل أوتوماتيك' },
       { text: 'بطاقة شغل: وصف مشكلة أو ميزة، ليها مسؤول ونقاش وحالة' },
-      { text: 'ملف إعدادات للـ repo' }
+      { text: 'ملف إعدادات للـ repo بيحدد مين يقدر يرفع ومين يقدر يقرأ بس' }
     ], answer: 1, explain: 'الـ issues هي نظام إدارة الشغل المدمج في GitHub. بتنظم الأفكار والمشاكل قبل ما تتبرمج.' },
     { q: 'أنهي اسم branch أحسن لإصلاح مشكلة في ترميز العربي؟', options: [
       { text: 'branch2', mono: true },
@@ -257,19 +257,19 @@ $ git push
   ],
   quiz: [
     { q: 'الـ Pull Request هو إيه في جملة؟', options: [
-      { text: 'طلب سحب الملفات من GitHub' },
+      { text: 'طلب سحب الملفات من GitHub على جهازك عشان تشتغل عليها محلياً' },
       { text: 'طلب دمج branch في branch تاني مع مساحة مراجعة ونقاش قبل الدمج' },
-      { text: 'طلب إذن عشان تعمل clone' }
+      { text: 'طلب إذن من صاحب الـ repo عشان تقدر تعمل clone للمشروع' }
     ], answer: 1, explain: 'الـ PR بيطلب دمج شغلك ويفتح باب مراجعة منظم: تعليقات على الأسطر، موافقة أو طلب تعديلات، وبعدين دمج موثق.' },
     { q: 'المراجع طلب تعديلات على الـ PR بتاعك. إيه الصح؟', options: [
-      { text: 'افتح PR جديد بالتعديلات' },
+      { text: 'افتح PR جديد بالتعديلات وسيب القديم من غير ما تقفله ولا تحدثه' },
       { text: 'عدل على نفس الـ branch واعمل push، والـ PR هيتحدث لوحده' },
-      { text: 'امسح الـ branch وابدأ من الأول' }
+      { text: 'امسح الـ branch وابدأ من الأول بـ branch جديد وPR جديد من غير تعديلات' }
     ], answer: 1, explain: 'الـ PR مربوط بالـ branch مش بلقطة منه. أي push جديد على نفس الـ branch بيظهر في نفس الـ PR فوراً.' },
     { q: 'Squash and merge بتعمل إيه؟', options: [
-      { text: 'بتمسح الـ PR' },
+      { text: 'بتمسح الـ PR وكل التعليقات اللي عليه وبترجع الـ branch زي ما كان' },
       { text: 'بتكبس كل commits الـ branch في commit واحدة نضيفة على main' },
-      { text: 'بتدمج من غير مراجعة' }
+      { text: 'بتدمج الـ branch من غير مراجعة وبتتجاهل أي اعتراضات من الفريق' }
     ], answer: 1, explain: 'كويسة لما commits وسط الشغل ملخبطة (typo، fix، fix again). النتيجة commit واحدة واضحة في تاريخ main.' }
   ],
   exercises: [
@@ -433,17 +433,17 @@ $ git commit -m "stop tracking .env"` },
   ],
   quiz: [
     { q: 'وظيفة ملف .gitignore؟', options: [
-      { text: 'يمنع GitHub من عرض ملفات معينة' },
+      { text: 'يمنع GitHub من عرض ملفات معينة للزوار لكن Git لسه بيتتبعها كلها' },
       { text: 'يخلي Git يتجاهل ملفات بأنماط معينة فمتدخلش في commits' },
-      { text: 'يضغط الملفات الكبيرة' }
+      { text: 'يضغط الملفات الكبيرة في الـ repo عشان الـ clone يبقى أسرع وأخف' }
     ], answer: 1, explain: 'أنماط .gitignore بتشيل الملفات من status و add. الملف المهم مش بيتتبع من الأساس، فمش بيوصل التاريخ أبداً.' },
     { q: 'ملف .env اترفع في commit قديمة. إضافته لـ .gitignore هتحل المشكلة؟', options: [
-      { text: 'أيوه، الملف هيتشال تلقائياً' },
+      { text: 'أيوه، الملف هيتشال تلقائياً من الـ repo ومن التاريخ القديم لما تعمل commit' },
       { text: 'لأ: لازم git rm --cached الأول، ولازم تغير كلمة السر نفسها لأن التاريخ محفوظ' },
-      { text: 'لأ: مفيش أي حل' }
+      { text: 'لأ: مفيش أي حل، الـ repo لازم تتمسح وتتعمل من جديد بإسم تاني' }
     ], answer: 1, explain: 'gitignore بيمنع التتبع الجديد بس. rm --cached بيشيل الملف من التتبع من غير ما يمسحه من جهازك، وكلمة السر المتسربة لازم تتغير من مصدرها.' },
     { q: 'النمط node_modules/ في .gitignore معناه إيه؟', options: [
-      { text: 'تجاهل ملف اسمه node_modules' },
+      { text: 'تجاهل أي ملف اسمه node_modules، لكن الفولدر نفسه ومحتوياته لسه بتتتبع' },
       { text: 'تجاهل الفولدر node_modules بكل محتواه' },
       { text: 'تجاهل أي فولدر فيه المكتبات' }
     ], answer: 1, explain: 'الشرطة المائلة الأخيرة معناها فولدر. النمط ده بيمنع آلاف ملفات المكتبات من تلويث الـ repo: أي حد هيعمل install هيجيبهم.' }
@@ -526,9 +526,9 @@ HEAD is now at 2112df3 update readme` },
       { text: 'تمسح الـ repo وتعملها من جديد' }
     ], answer: 1, explain: 'revert بتعمل commit عكسية من غير ما تمسح التاريخ، فمتكسرش نسخ زمايلك. reset + force بيمسح commits الناس عندهم.' },
     { q: 'git restore --staged بتعمل إيه؟', options: [
-      { text: 'بتمسح الملف من الجهاز' },
+      { text: 'بتمسح الملف من الجهاز نهائياً وبترجع النسخة اللي في آخر commit' },
       { text: 'بتشيل الملف من الـ staging من غير ما تمسح تعديلاتك' },
-      { text: 'بترجع آخر commit' }
+      { text: 'بترجع آخر commit كله وبتمسح كل تعديلاتك اللي لسه مش متحفوظة' }
     ], answer: 1, explain: 'بتلغي الـ add بس: الملف يخرج من الـ commit الجاية، وتعديلاتك تفضل في مجلد الشغل تعمل بيها اللي تريده.' }
   ],
   exercises: [
@@ -609,21 +609,21 @@ $ git push
   quiz: [
     { q: 'إيه الأمر اللي بيربط الفولدر المحلي بالـ repo الفاضية اللي عملتها على GitHub؟', options: [
       { text: 'git remote add origin https://github.com/USERNAME/my-first-site.git' },
-      { text: 'git init https://github.com/USERNAME/my-first-site.git' },
-      { text: 'git clone origin main' },
+      { text: 'git init https://github.com/USERNAME/my-first-site.git وبعدين git push' },
+      { text: 'git clone origin main من جوه فولدر المشروع الجديد على جهازك' },
       { text: 'git pages enable origin' }
     ], answer: 0, explain: 'git remote add origin بيسجل عنوان الـ repo البعيدة باسم origin، وبعدها git push -u origin main بيرفع الكود عليها.' },
     { q: 'في GitHub Pages، إعدادات النشر الصح لموقع بسيط هي:', options: [
       { text: 'Settings ثم Pages، المصدر Deploy from a branch، البرانش main والفولدر / (root)' },
       { text: 'Settings ثم Security، وتفعيل Pages من هناك' },
-      { text: 'تعمل branch اسمها pages وتمسح main' },
+      { text: 'تعمل branch اسمها pages وتمسح main عشان GitHub يتعرف على الموقع' },
       { text: 'مفيش حاجة تتفعل، أي repo بتبقى موقع لوحدها' }
     ], answer: 0, explain: 'من Settings ثم Pages بتختار Deploy from a branch، وبعدين main و / (root) وتدوس Save، وبعد دقيقة أو اتنين الرابط بيشتغل.' },
     { q: 'بعد ما الموقع اتنشر، عدلت الصفحة وعملت commit. إيه اللي لازم تعمله عشان التعديل يظهر على الرابط المنشور؟', options: [
-      { text: 'تمسح الـ repo وتنشرها من جديد' },
+      { text: 'تمسح الـ repo من GitHub وتنشرها من جديد بعد ما تعدل الملفات محلياً' },
       { text: 'git push، والموقع بيتحدث لوحده بعد حوالي دقيقة' },
       { text: 'تضغط Save في Settings ثم Pages كل مرة' },
-      { text: 'تعمل git clone تاني' }
+      { text: 'تعمل git clone تاني للـ repo من GitHub وتنشر النسخة الجديدة بإيدك' }
     ], answer: 1, explain: 'كل push جديد على main بيحدث الموقع تلقائيا خلال دقيقة تقريبا، من غير أي خطوة تانية.' }
   ],
   exercises: [
